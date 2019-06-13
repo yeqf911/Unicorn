@@ -49,8 +49,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                startMainActivity();
-//                login();
+                login();
                 break;
             case R.id.link_signup:
                 signUp();
