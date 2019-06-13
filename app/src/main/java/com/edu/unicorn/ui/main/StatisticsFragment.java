@@ -2,6 +2,7 @@ package com.edu.unicorn.ui.main;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,7 +22,11 @@ import com.edu.unicorn.R;
 import com.edu.unicorn.db.SqliteHelper;
 import com.edu.unicorn.entity.Bill;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,7 +65,7 @@ public class StatisticsFragment extends Fragment {
 
     public StatisticsFragment() {
         // Required empty public constructor
-        dbHelper = new SqliteHelper(getContext(), SqliteHelper.DB_NAME, null, SqliteHelper.Version);
+
     }
 
     /**
@@ -87,6 +92,7 @@ public class StatisticsFragment extends Fragment {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 //        }
+        dbHelper = new SqliteHelper(getContext(), SqliteHelper.DB_NAME, null, SqliteHelper.Version);
     }
 
     @Override
@@ -111,7 +117,7 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String year = yearSpinner.getSelectedItem().toString();
-                List<Bill> bills = queryBillByYear(year);
+                List<Bill> bills = queryBillByDate(year);
                 double incomes = 0;
                 double outcomes = 0;
 
@@ -134,7 +140,7 @@ public class StatisticsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String month = yearSpinner.getSelectedItem().toString() + "-" + monthSpinner.getSelectedItem().toString();
-                List<Bill> bills = queryBillByYear(month);
+                List<Bill> bills = queryBillByDate(month);
                 double incomes = 0;
                 double outcomes = 0;
 
@@ -160,7 +166,7 @@ public class StatisticsFragment extends Fragment {
                 String month = yearSpinner.getSelectedItem().toString() + "-"
                         + monthSpinner.getSelectedItem().toString() + "-"
                         + daySpinner.getSelectedItem().toString();
-                List<Bill> bills = queryBillByYear(month);
+                List<Bill> bills = queryBillByDate(month);
                 double incomes = 0;
                 double outcomes = 0;
 
@@ -221,16 +227,42 @@ public class StatisticsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private List<Bill> queryBillByYear(String year) {
-//        dbHelper.getReadableDatabase().query()
-        return new ArrayList<>();
-    }
+    private List<Bill> queryBillByDate(String subDete) {
+        Cursor result = dbHelper.getReadableDatabase().query(SqliteHelper.BILL_TABLE,
+                                                             new String[]{"id", "type", "comment", "date", "income", "outcome", "way"},
+                                                    "date like ?", new String[]{subDete + "%"},
+                                                    null, null, null);
+        List<Bill> bills = new ArrayList<>();
+        if (result.moveToFirst()) {
+            while (!result.isAfterLast()) {
+                int id = result.getInt(0);
+                String type = result.getString(1);
+                String comment = result.getString(2);
+                String dateStr = result.getString(3);
+                double income = result.getDouble(4);
+                double outcome = result.getDouble(5);
+                String way = result.getString(6);
+                // do something useful with these
 
-    private List<Bill> queryBillByMonth(String month) {
-        return new ArrayList<>();
-    }
+                // parse date
+                SimpleDateFormat df = (SimpleDateFormat) DateFormat.getDateInstance();
+                df.applyPattern("yyyy-MM-dd");
+                Date date = new Date();
+                try {
+                    date = df.parse(dateStr);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-    private List<Bill> queryBillByDate(String date) {
-        return new ArrayList<>();
+                Bill bill = new Bill(type, income, outcome, date, way, comment);
+                bill.setId(id);
+
+                bills.add(bill);
+
+                result.moveToNext();
+            }
+        }
+        result.close();
+        return bills;
     }
 }
