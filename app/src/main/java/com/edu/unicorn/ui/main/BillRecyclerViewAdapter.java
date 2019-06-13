@@ -97,6 +97,10 @@ public class BillRecyclerViewAdapter extends RecyclerView.Adapter<BillRecyclerVi
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if (mValues.isEmpty()) {
+            return;
+        }
+        Log.d("BillRecyclerViewAdapter", "----" + position + "----");
         holder.mItem = mValues.get(position);
         String type = holder.mItem.getType();
 
@@ -147,17 +151,6 @@ public class BillRecyclerViewAdapter extends RecyclerView.Adapter<BillRecyclerVi
                 updateBillComment(position);
             }
         });
-
-//        holder.mBillMoney.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (updateBillMoney(position)) {
-//                    Toast.makeText(context, "账本更新成功", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(context, "账本更新失败", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
     }
 
     private boolean updateBillComment(int position) {
