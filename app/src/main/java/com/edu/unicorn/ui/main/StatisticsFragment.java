@@ -1,5 +1,6 @@
 package com.edu.unicorn.ui.main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,10 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edu.unicorn.R;
+import com.edu.unicorn.db.SqliteHelper;
+import com.edu.unicorn.entity.Bill;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,8 +56,11 @@ public class StatisticsFragment extends Fragment {
     private TextView monthOutcome;
     private TextView dayOutcome;
 
+    private SqliteHelper dbHelper;
+
     public StatisticsFragment() {
         // Required empty public constructor
+        dbHelper = new SqliteHelper(getContext(), SqliteHelper.DB_NAME, null, SqliteHelper.Version);
     }
 
     /**
@@ -77,7 +87,6 @@ public class StatisticsFragment extends Fragment {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
 //        }
-
     }
 
     @Override
@@ -98,40 +107,75 @@ public class StatisticsFragment extends Fragment {
         dayOutcome = view.findViewById(R.id.day_outcome);
 
         yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getContext(), yearSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                String year = yearSpinner.getSelectedItem().toString();
+                List<Bill> bills = queryBillByYear(year);
+                double incomes = 0;
+                double outcomes = 0;
+
+                for (Bill bill :
+                        bills) {
+                    incomes += bill.getIncome();
+                    outcomes += bill.getOutcome();
+                }
+                yearIncome.setText("全年总收入 " + incomes + " 元");
+                yearOutcome.setText("全年总支出 " + outcomes + " 元");
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
         monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getContext(),
-                        yearSpinner.getSelectedItem().toString() + "-" + monthSpinner.getSelectedItem().toString(),
-                        Toast.LENGTH_SHORT).show();
+                String month = yearSpinner.getSelectedItem().toString() + "-" + monthSpinner.getSelectedItem().toString();
+                List<Bill> bills = queryBillByYear(month);
+                double incomes = 0;
+                double outcomes = 0;
+
+                for (Bill bill :
+                        bills) {
+                    incomes += bill.getIncome();
+                    outcomes += bill.getOutcome();
+                }
+
+                monthIncome.setText("本月总收入 " + incomes + " 元");
+                monthOutcome.setText("本月总支出 " + outcomes + " 元");
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
         daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String month = yearSpinner.getSelectedItem().toString() + "-"
+                        + monthSpinner.getSelectedItem().toString() + "-"
+                        + daySpinner.getSelectedItem().toString();
+                List<Bill> bills = queryBillByYear(month);
+                double incomes = 0;
+                double outcomes = 0;
 
+                for (Bill bill :
+                        bills) {
+                    incomes += bill.getIncome();
+                    outcomes += bill.getOutcome();
+                }
+
+                dayIncome.setText("当日总收入 " + incomes + " 元");
+                dayOutcome.setText("当日总支出 " + outcomes + " 元");
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
@@ -175,5 +219,18 @@ public class StatisticsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private List<Bill> queryBillByYear(String year) {
+//        dbHelper.getReadableDatabase().query()
+        return new ArrayList<>();
+    }
+
+    private List<Bill> queryBillByMonth(String month) {
+        return new ArrayList<>();
+    }
+
+    private List<Bill> queryBillByDate(String date) {
+        return new ArrayList<>();
     }
 }
