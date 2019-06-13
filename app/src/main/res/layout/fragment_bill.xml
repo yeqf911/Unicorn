@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="4dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="2dp"
+        android:background="@drawable/bill_item_background">
+
+        <TextView
+            android:id="@+id/bill_type"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:ellipsize="end"
+            android:lines="1"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/bill_comment"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/bill_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:text="2019-06-01"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/bill_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="right"
+            android:lines="1"
+            android:text="19.00￥"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>
